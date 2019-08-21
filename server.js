@@ -5,6 +5,4 @@ const port = process.env.port || 3000;
 
 const server = http.createServer(app);
 
-server.listen(port,()=>{
-    console.log("server is listening on 3000");
-});
+server.listen(port);
