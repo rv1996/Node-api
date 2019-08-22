@@ -3,9 +3,24 @@ const app = express();
 const morgan = require("morgan");
 const productRoutes = require("./api/routes/products");
 const ordersRoutes = require("./api/routes/orders");
+const bodyParser = require("body-parser");
 
 app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({extended: true})); // extract url encoded data easily
+app.use(bodyParser.json()); // extract json data easily
 
+// this is to prevent the cors error cross origin resource sharing
+app.use((req, res, next)=>{
+    res.header("Access-Control-Allow-Origin","*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    if(req.method === "OPTIONS"){// answer for the HTTP verb which are allowed in your web api
+        res.header("Access-Control-Allow-Methods","PUT, POST, PATCH, DELETE, GET"); 
+        return res.status(200).json({});
+    }
+    next(); // without this the request will be block.. calling callback is import
+});
 
 app.use("/products",productRoutes);
 app.use("/orders",ordersRoutes);
@@ -27,7 +42,6 @@ app.use((error,req,res,next)=>{
             message:error.message
         }
     })
-
     // above request will reach here by with new args error 
 });
 
