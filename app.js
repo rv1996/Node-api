@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const productRoutes = require("./api/routes/products");
 const ordersRoutes = require("./api/routes/orders");
 const bodyParser = require("body-parser");
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({extended: true})); // extract url encoded data easily
@@ -24,6 +26,12 @@ app.use((req, res, next)=>{
 
 app.use("/products",productRoutes);
 app.use("/orders",ordersRoutes);
+
+//connecting to mongoDB
+mongoose.connect('mongodb+srv://admin:'+process.env.MONGO_PASSWORD+'@node-rest-api-tispt.mongodb.net/test?retryWrites=true&w=majority',{useNewUrlParser:true})
+.then(db=>console.log("successfully connected to the database"))
+.catch(err=>console.log(err));
+
 
 // use is the express middlewear every req need to get pass through all of this and there comes a next parameter in which 
 // continues the middlewear execution by passing it to the next middlewear.Next is  kinda like callback function
